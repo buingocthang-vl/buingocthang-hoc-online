@@ -5,6 +5,7 @@ export default function Quiz() {
   const [current, setCurrent] = useState(0);
   const [selected, setSelected] = useState(null);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [answers, setAnswers] = useState([]);
 
   const q = questions[current];
 
@@ -15,12 +16,21 @@ export default function Quiz() {
   const checkAnswer = (option) => {
     setSelected(option);
     setShowAnswer(true);
+    const updated = [...answers];
+    updated[current] = option;
+    setAnswers(updated);
   };
 
   const next = () => {
     setCurrent(current + 1);
-    setSelected(null);
-    setShowAnswer(false);
+    setSelected(answers[current + 1] || null);
+    setShowAnswer(answers[current + 1] !== undefined);
+  };
+
+  const prev = () => {
+    setCurrent(current - 1);
+    setSelected(answers[current - 1] || null);
+    setShowAnswer(answers[current - 1] !== undefined);
   };
 
   return (
@@ -51,9 +61,18 @@ export default function Quiz() {
           );
         })}
       </div>
-      {showAnswer && current < questions.length - 1 && (
-        <button onClick={next} style={{ marginTop: 10, padding: 10 }}>Câu tiếp</button>
-      )}
+      <div style={{ marginTop: 20 }}>
+        {current > 0 && (
+          <button onClick={prev} style={{ marginRight: 10, padding: 10 }}>
+            ⬅ Câu trước
+          </button>
+        )}
+        {showAnswer && current < questions.length - 1 && (
+          <button onClick={next} style={{ padding: 10 }}>
+            Câu tiếp ➡
+          </button>
+        )}
+      </div>
     </div>
   );
 }
